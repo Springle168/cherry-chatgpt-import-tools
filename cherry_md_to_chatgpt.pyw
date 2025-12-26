@@ -45,6 +45,17 @@ def normalize_trailing_spaces(text: str) -> str:
     return "\n".join(out_lines)
 
 
+def trim_single_newlines(text: str) -> str:
+    """Remove single newline characters at the beginning and end of the text."""
+    if not text:
+        return text
+    if text.startswith("\n"):
+        text = text[1:]
+    if text.endswith("\n"):
+        text = text[:-1]
+    return text
+
+
 def parse_markdown(text: str):
     """
     Parse Cherry Studio exported markdown into:
@@ -199,6 +210,7 @@ def build_conversation_object(blocks, conv_index: int, file_title: str, base_tim
         children = [f"msg-{idx + 1}"] if idx < num_msgs else []
         role = b["role"]
         text = normalize_trailing_spaces(b["text"] or "")
+        text = trim_single_newlines(text)
 
         mapping[msg_id] = {
             "id": msg_id,
